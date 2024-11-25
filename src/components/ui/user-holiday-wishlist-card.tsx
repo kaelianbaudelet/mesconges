@@ -122,10 +122,12 @@ const UserHolidayWishlistCard = () => {
           };
         });
         type UserData = HolidayWishesRow & { children: number };
-        const userData: UserData[] = formattedData.map((item) => ({
-          ...item,
-          children: item.childrenCount,
-        }));
+        const userData: UserData[] = formattedData.map(
+          (item: HolidayWishesRow) => ({
+            ...item,
+            children: item.childrenCount,
+          })
+        );
         setData(userData);
       } catch (error) {
         console.error("Failed to fetch data:", error);

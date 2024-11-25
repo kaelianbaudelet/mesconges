@@ -16,7 +16,7 @@ export async function deleteCampaign() {
       where: { campaignId: campaign.id },
       select: { id: true },
     })
-    .then((wishes) => wishes.map((wish) => wish.id));
+    .then((wishes: { id: string }[]) => wishes.map((wish) => wish.id));
 
   // Supprimer toutes les dates liées aux vœux des utilisateurs
   await prisma.wishDate.deleteMany({

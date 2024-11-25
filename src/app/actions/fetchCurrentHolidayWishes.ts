@@ -48,9 +48,9 @@ export async function fetchCurrentHolidayWishes() {
     }
 
     return {
-      wish1Dates: wishes.wish1.map((w) => w.date),
-      wish2Dates: wishes.wish2.map((w) => w.date),
-      wish3Dates: wishes.wish3.map((w) => w.date),
+      wish1Dates: wishes.wish1.map((w: { date: Date }) => w.date),
+      wish2Dates: wishes.wish2.map((w: { date: Date }) => w.date),
+      wish3Dates: wishes.wish3.map((w: { date: Date }) => w.date),
       childrenCount: wishes.childrenCount,
       familyStatus: wishes.familyStatus,
     };

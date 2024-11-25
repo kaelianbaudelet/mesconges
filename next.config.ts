@@ -14,6 +14,7 @@ const cspHeader = `
 `;
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     domains: ["lh3.googleusercontent.com"],
   },
