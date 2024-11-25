@@ -1,17 +1,13 @@
-import React from "react";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-const Navbar: React.FC = () => {
+"use server";
+
+import UserDropdown from "./user-dropdown";
+import { fetchUser } from "@/app/actions/fetchUser";
+import type { User } from "@/lib/user";
+
+export async function Navbar() {
+  const user: User | null = await fetchUser();
   return (
-    <header className="z-50 flex flex-wrap md:justify-start md:flex-nowrap w-full text-sm py-4 bg-white/50 fixed backdrop-blur border-b h-16">
+    <header className="z-50 flex flex-wrap md:justify-start md:flex-nowrap w-full text-sm py-4 bg-white/80 fixed backdrop-blur border-b h-16">
       <nav className="max-w-[1110px] flex flex-wrap basis-full items-center w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center sm:gap-x-2 lg:gap-x-0 xl:gap-x-3">
           <a className="flex-none rounded-md focus:outline-none focus:opacity-80">
@@ -53,41 +49,12 @@ const Navbar: React.FC = () => {
 
         <div className="flex items-center ms-auto order-3">
           <div className="flex justify-end items-center">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
-                >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage
-                      src="https://images.unsplash.com/photo-1659482633369-9fe69af50bfb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=3&w=320&h=320&q=80"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>SC</AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal">
-                  <div className="flex flex-col space-y-1">
-                    <p className="text-sm font-medium leading-none">
-                      Kaelian BAUDELET
-                    </p>
-                    <p className="text-xs leading-none text-muted-foreground">
-                      aconique@gmail.com
-                    </p>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Déconnexion</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <UserDropdown user={user} />
           </div>
         </div>
       </nav>
     </header>
   );
-};
+}
 
 export default Navbar;

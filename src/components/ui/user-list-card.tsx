@@ -1,17 +1,14 @@
 "use client";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
-import * as React from "react";
+import React, { FC } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -29,7 +26,6 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
@@ -45,208 +41,151 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { toast } from "react-hot-toast";
+import { getUsers } from "@/app/actions/getUsers";
+import { deleteUsers } from "@/app/actions/deleteUsers";
+import { useCallback, useEffect, useState } from "react";
 
-const data: Users[] = [
-  {
-    id: "eb4499c4-6bd2-44be-aa28-9675d344bcd5",
-    firstname: "Ken",
-    lastname: "Mayer",
-    role: "user",
-
-    email: "ken99@yahoo.com",
-  },
-];
-
-export type Users = {
+type Users = {
   id: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   role: "admin" | "user";
   email: string;
 };
 
-const DeleteAccountDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleDelete = () => {
-    console.log("Compte supprimé");
-    setIsOpen(false); // Ferme la modal
-  };
-
+const MassDeleteDialog = ({
+  selectedUsers,
+  onClose,
+  onConfirm,
+}: {
+  selectedUsers: Users[];
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}) => {
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger
-        className="relative w-full flex cursor-default select-none items-center gap-2 font-semibold hover:text-white hover:bg-destructive rounded-md px-2 py-1.5 text-sm outline-none transition-colors"
-        onClick={() => setIsOpen(true)}
-      >
-        Supprimer
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Êtes-vous sûr de vouloir supprimer ce compte ?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Cette action est irréversible. Une fois confirmée, le compte sera
-            supprimé de façon permanente et toutes ses données seront
-            définitivement perdues.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsOpen(false)}>
-            Annuler
-          </AlertDialogCancel>
-          <Button variant="destructive" onClick={handleDelete}>
-            Supprimer
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          Êtes-vous sûr de vouloir supprimer {selectedUsers.length}{" "}
+          utilisateur(s) ?
+        </AlertDialogTitle>
+
+        <p className="text-sm text-zinc-500">
+          Cette action est irréversible. Les comptes suivants seront supprimés
+          de façon permanente :
+        </p>
+        <div className="max-h-40 overflow-y-auto border rounded-md text-sm">
+          {selectedUsers.map((user: Users) => (
+            <div key={user.id} className="py-1 px-2 hover:bg-zinc-100 rounded">
+              {user.firstName} {user.lastName} {user.email}
+            </div>
+          ))}
+        </div>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel onClick={onClose}>Annuler</AlertDialogCancel>
+        <Button variant="destructive" onClick={onConfirm}>
+          Supprimer
+        </Button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
   );
 };
 
-export const columns: ColumnDef<Users>[] = [
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "firstname",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="px-0 py-0"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Prenom
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("firstname")}</div>,
-  },
-  {
-    accessorKey: "lastname",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="px-0 py-0"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nom
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("lastname")}</div>,
-  },
+const UserActionsCell: FC<{
+  user: Users;
+  onDelete: (userId: string) => Promise<void>;
+}> = ({
+  user,
+  onDelete,
+}: {
+  user: Users;
+  onDelete: (userId: string) => Promise<void>;
+}) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="px-0 py-0"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "role",
-    header: ({ column }) => {
-      return (
-        <Button
-          className="px-0 py-0"
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Role
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <div>
-        {row.getValue("role") === "user" ? "Utilisateur" : "Administrateur"}
-      </div>
-    ),
-  },
-  {
-    id: "actions",
-    header: "Actions",
-    enableHiding: false,
-
-    cell: ({ row }) => {
-      const Users = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="my-2 p-0 h-5">
-              <svg
-                className="h-5 w-5 fill-black"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12Z" />
-                <path d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z" />
-                <path d="M21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12Z" />
-              </svg>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(Users.id)}
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Menu</span>
+            <svg
+              width="18px"
+              height="18px"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              Copier l'ID
+              <path
+                d="M7 12C7 13.1046 6.10457 14 5 14C3.89543 14 3 13.1046 3 12C3 10.8954 3.89543 10 5 10C6.10457 10 7 10.8954 7 12Z"
+                fill="#000000"
+              />
+              <path
+                d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z"
+                fill="#000000"
+              />
+              <path
+                d="M21 12C21 13.1046 20.1046 14 19 14C17.8954 14 17 13.1046 17 12C17 10.8954 17.8954 10 19 10C20.1046 10 21 10.8954 21 12Z"
+                fill="#000000"
+              />
+            </svg>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(user.id)}
+          >
+            Copier l&apos;ID
+          </DropdownMenuItem>
+
+          <>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => setIsDeleteDialogOpen(true)}>
+              Supprimer
             </DropdownMenuItem>
-            {Users.role === "user" && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <DeleteAccountDialog />
-                </DropdownMenuItem>
-              </>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
+          </>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Êtes-vous sûr de vouloir supprimer cet utilisateur ?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Cette action est irréversible. Une fois confirmée, le compte sera
+              supprimé de façon permanente et toutes ses données seront
+              définitivement perdues.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                await onDelete(user.id);
+                setIsDeleteDialogOpen(false);
+              }}
+            >
+              Supprimer
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
 
 export const UserListCard: React.FC = () => {
-  const handleMassDelete = () => {
-    const selectedRows = table.getSelectedRowModel().rows;
-    console.log(
-      "Utilisateurs sélectionnés pour suppression :",
-      selectedRows.map((row) => row.original)
-    );
-  };
+  const [users, setUsers] = useState<Users[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -254,9 +193,154 @@ export const UserListCard: React.FC = () => {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = React.useState(false);
+
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getUsers();
+
+      if (response.users) {
+        setUsers(response.users);
+      } else {
+        toast.error("Erreur lors du chargement des utilisateurs");
+      }
+    } catch {
+      toast.error("Erreur lors du chargement des utilisateurs");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleSingleDelete = useCallback(
+    async (userId: string) => {
+      try {
+        const result = await deleteUsers([userId]);
+        if (result.success) {
+          toast.success("Utilisateur supprimé avec succès");
+          await fetchUsers();
+        } else {
+          toast.error(result.error || "Erreur lors de la suppression");
+        }
+      } catch {
+        toast.error("Erreur lors de la suppression");
+      }
+    },
+    [fetchUsers]
+  );
+
+  const columns = React.useMemo<ColumnDef<Users>[]>(
+    () => [
+      {
+        id: "select",
+        header: ({ table }) => (
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+        ),
+        enableSorting: false,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "firstName",
+        header: ({ column }) => {
+          return (
+            <Button
+              className="px-0 py-0"
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Prenom
+            </Button>
+          );
+        },
+        cell: ({ row }) => <div>{row.getValue("firstName")}</div>,
+      },
+      {
+        accessorKey: "lastName",
+        header: ({ column }) => {
+          return (
+            <Button
+              className="px-0 py-0"
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Nom
+            </Button>
+          );
+        },
+        cell: ({ row }) => <div>{row.getValue("lastName")}</div>,
+      },
+      {
+        accessorKey: "email",
+        header: ({ column }) => {
+          return (
+            <Button
+              className="px-0 py-0"
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Email
+            </Button>
+          );
+        },
+        cell: ({ row }) => <div>{row.getValue("email")}</div>,
+      },
+      {
+        accessorKey: "role",
+        header: ({ column }) => {
+          return (
+            <Button
+              className="px-0 py-0"
+              variant="ghost"
+              onClick={() =>
+                column.toggleSorting(column.getIsSorted() === "asc")
+              }
+            >
+              Role
+            </Button>
+          );
+        },
+        cell: ({ row }) => (
+          <div>
+            {row.getValue("role") === "user" ? "Utilisateur" : "Administrateur"}
+          </div>
+        ),
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        enableHiding: false,
+        cell: ({ row }) => (
+          <UserActionsCell user={row.original} onDelete={handleSingleDelete} />
+        ),
+      },
+    ],
+    [handleSingleDelete]
+  );
 
   const table = useReactTable({
-    data,
+    data: users,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -273,6 +357,39 @@ export const UserListCard: React.FC = () => {
       rowSelection,
     },
   });
+
+  const selectedUsers = table
+    .getSelectedRowModel()
+    .rows.map((row) => row.original);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const handleMassDelete = async () => {
+    const selectedUserIds = selectedUsers.map((user) => user.id);
+    try {
+      const result = await deleteUsers(selectedUserIds);
+      if (result.success) {
+        toast.success(result.message);
+        await fetchUsers();
+        setIsDeleteDialogOpen(false);
+        setRowSelection({});
+      } else {
+        toast.error(result.error || "Erreur lors de la suppression");
+      }
+    } catch {
+      toast.error("Erreur lors de la suppression");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full relative">
+        <div className="spinner spinner-xl"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col p-5 leading-6 text-black bg-white rounded-xl border border-gray-200 border-solid">
@@ -291,22 +408,35 @@ export const UserListCard: React.FC = () => {
           }}
         />
         <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="w-full">
-                Actions de masse
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuItem
-                onClick={handleMassDelete}
-                disabled={table.getSelectedRowModel().rows.length === 0}
-              >
-                Supprimer la sélection
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <AlertDialog
+            open={isDeleteDialogOpen}
+            onOpenChange={setIsDeleteDialogOpen}
+          >
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full">
+                  Actions
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                  disabled={selectedUsers.length === 0}
+                >
+                  Supprimer la sélection
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {selectedUsers.length > 0 && (
+              <MassDeleteDialog
+                selectedUsers={selectedUsers}
+                onClose={() => setIsDeleteDialogOpen(false)}
+                onConfirm={handleMassDelete}
+              />
+            )}
+          </AlertDialog>
         </div>
       </div>
 
@@ -314,18 +444,16 @@ export const UserListCard: React.FC = () => {
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>

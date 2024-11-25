@@ -3,52 +3,74 @@ generator client {
 }
 
 datasource db {
-  // mysql, postgresql, sqlite, sqlserver, oracle
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model Campaign {
-  id         String   @id @default(uuid())
-  name       String
-  startDate  DateTime
-  endDate    DateTime?
-  wishes     Wish[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model User {
+  id        String    @id @default(uuid())
+  googleId  String    @unique
+  email     String    @unique
+  name      String
+  firstName String
+  lastName  String
+  picture   String
+  role      Role      @default(user)
+  sessions  Session[]
+  wishes    Wish[]
 }
 
-model User {
-  id         String   @id @default(uuid())
-  firstName  String
-  lastName   String
-  email      String   @unique
-  wishes     Wish[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Campaign {
+  id        String   @id @default(uuid())
+  startDate DateTime
+  endDate   DateTime
+  wishes    Wish[]
 }
 
 model Wish {
-  id             String      @id @default(uuid())
-  user           User        @relation(fields: [userId], references: [id])
-  userId         String
-  campaign       Campaign    @relation(fields: [campaignId], references: [id])
-  campaignId     String
-  wishDates      WishDate[]
-  familyStatus   FamilyStatus
-  childCount     Int
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
+  id           String       @id @default(uuid())
+  userId       String
+  campaignId   String
+  familyStatus FamilyStatus
+  childrenCount Int          // Nombre d'enfants
+  
+  // Relations nommées pour chaque vœu
+  wish1        WishDate[]    @relation("wish1_dates") // Liens vers plusieurs dates pour le vœu 1
+  wish2        WishDate[]    @relation("wish2_dates") // Liens vers plusieurs dates pour le vœu 2
+  wish3        WishDate[]    @relation("wish3_dates") // Liens vers plusieurs dates pour le vœu 3
+  
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  campaign     Campaign     @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model WishDate {
   id       String   @id @default(uuid())
-  wish     Wish     @relation(fields: [wishId], references: [id])
-  wishId   String
   date     DateTime
+  
+  // Relations inverses avec Wish pour chaque vœu
+  wish1    Wish?    @relation("wish1_dates", fields: [wish1Id], references: [id])
+  wish1Id  String?
+
+  wish2    Wish?    @relation("wish2_dates", fields: [wish2Id], references: [id])
+  wish2Id  String?
+
+  wish3    Wish?    @relation("wish3_dates", fields: [wish3Id], references: [id])
+  wish3Id  String?
+}
+
+enum Role {
+  user
+  admin
 }
 
 enum FamilyStatus {
-  Isolated
-  Family
+  isolated
+  family
 }

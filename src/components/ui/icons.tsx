@@ -9,7 +9,6 @@ export const Bookmark: React.FC<IconProps & React.SVGProps<SVGSVGElement>> = ({
   size = 24,
   color = "black",
   className,
-  ...props
 }) => (
   <svg
     width={size}
@@ -31,7 +30,6 @@ export const Note: React.FC<IconProps & React.SVGProps<SVGSVGElement>> = ({
   size = 24,
   color = "black",
   className,
-  ...props
 }) => (
   <svg
     width={size}
@@ -55,7 +53,6 @@ export const Account: React.FC<IconProps & React.SVGProps<SVGSVGElement>> = ({
   size = 24,
   color = "black",
   className,
-  ...props
 }) => (
   <svg
     width={size}
@@ -93,8 +90,6 @@ export const Disconnect: React.FC<
 export const Users: React.FC<IconProps & React.SVGProps<SVGSVGElement>> = ({
   size = 24,
   color = "black",
-  className,
-  ...props
 }) => (
   <svg
     width={size}

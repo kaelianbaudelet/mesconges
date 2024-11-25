@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Bookmark,
@@ -9,50 +9,95 @@ import {
   Disconnect,
   Users,
 } from "@/components/ui/icons";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import { logout } from "@/app/actions/logout";
+import { fetchUser } from "@/app/actions/fetchUser";
 
 interface AsideProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  isPanelOpen: boolean;
 }
 
-const Aside: React.FC<AsideProps> = ({ activeTab, setActiveTab }) => {
+const Aside: React.FC<AsideProps> = ({
+  activeTab,
+  setActiveTab,
+  isPanelOpen,
+}) => {
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const user = await fetchUser();
+      if (user) {
+        setUserRole(user.role);
+        setActiveTab(user.role === "admin" ? "campagne" : "voeux_conges");
+      }
+    };
+    fetchData();
+  }, [setActiveTab]);
+
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
   return (
-    <div className="w-max min-w-64 hidden fixed inset-x-0 h-full bg-white duration-300 ease-in-out sm:static sm:z-0 sm:flex flex-col sm:pt-0 pt-6 sm:border-0 border-r z-40">
+    <div
+      className={`w-max min-w-64 sm:static sm:z-0 flex-col pt-6 sm:pt-0 sm:flex transition-transform duration-300 ${
+        isPanelOpen
+          ? "fixed inset-0 bg-white/80 backdrop-blur-sm z-40 -translate-x-full mt-16"
+          : "fixed translate-x-0 bg-white/80 backdrop-blur-sm  h-full sm:border-0 border-r border-zinc-200 z-40"
+      }`}
+    >
       <div className="sm:px-0 sm:pr-5 px-5">
         <ul className="flex flex-col p-0 m-0 gap-y-2">
-          <li>
-            <Button
-              variant={activeTab === "campagne" ? "default" : "secondary"}
-              className="w-full justify-start"
-              onClick={() => handleTabClick("campagne")}
-            >
-              <Bookmark
-                color={activeTab === "campagne" ? "white" : "black"}
-                size={20}
-              />
-              Campagne
-            </Button>
-          </li>
-          <li>
-            <Button
-              variant={activeTab === "utilisateurs" ? "default" : "secondary"}
-              className="w-full justify-start"
-              onClick={() => handleTabClick("utilisateurs")}
-            >
-              <Users
-                color={activeTab === "utilisateurs" ? "white" : "black"}
-                size={20}
-              />
-              Utilisateurs
-            </Button>
-          </li>
+          {userRole === "admin" && (
+            <li>
+              <Button
+                variant={activeTab === "campagne" ? "default" : "secondary"}
+                className="w-full justify-start"
+                onClick={() => handleTabClick("campagne")}
+              >
+                <Bookmark
+                  color={activeTab === "campagne" ? "white" : "black"}
+                  size={20}
+                />
+                Campagne
+              </Button>
+            </li>
+          )}
+
+          {userRole === "admin" && (
+            <li>
+              <Button
+                variant={activeTab === "utilisateurs" ? "default" : "secondary"}
+                className="w-full justify-start"
+                onClick={() => handleTabClick("utilisateurs")}
+              >
+                <Users
+                  color={activeTab === "utilisateurs" ? "white" : "black"}
+                  size={20}
+                />
+                Utilisateurs
+              </Button>
+            </li>
+          )}
         </ul>
-        <div className="my-5 mx-2 h-px bg-zinc-200"></div>
+        {userRole === "admin" && (
+          <div className="my-5 mx-2 h-px bg-zinc-200"></div>
+        )}
         <ul className="flex flex-col p-0 m-0 gap-y-2">
+          {/* Onglet "Mes voeux" visible pour tous les utilisateurs */}
           <li>
             <Button
               variant={activeTab === "voeux_conges" ? "default" : "secondary"}
@@ -67,6 +112,7 @@ const Aside: React.FC<AsideProps> = ({ activeTab, setActiveTab }) => {
             </Button>
           </li>
 
+          {/* Onglet "Mon compte" visible pour tous les utilisateurs */}
           <li>
             <Button
               variant={activeTab === "mon_compte" ? "default" : "secondary"}
@@ -84,17 +130,43 @@ const Aside: React.FC<AsideProps> = ({ activeTab, setActiveTab }) => {
 
         <div className="my-5 mx-2 h-px bg-zinc-200"></div>
 
-        <Button
-          variant="secondary"
-          className="bg-none hover:bg-destructive w-full justify-start hover:text-white group"
-        >
-          <Disconnect
-            color="white"
-            size={20}
-            className="fill-black group-hover:fill-white transition-colors"
-          />
-          Déconnexion
-        </Button>
+        {/* Déconnexion */}
+        <AlertDialog>
+          <AlertDialogTrigger className="w-full justify-start" asChild>
+            <Button
+              variant="secondary"
+              className="bg-none hover:bg-destructive w-full justify-start hover:text-white group"
+            >
+              <Disconnect
+                color="white"
+                size={20}
+                className="fill-black group-hover:fill-white transition-colors"
+              />
+              Déconnexion
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                Êtes-vous sûr de vouloir vous déconnecter ?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Vous allez être redirigé vers la page de connexion.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Annuler</AlertDialogCancel>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  logout();
+                }}
+              >
+                Déconnexion
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

@@ -72,6 +72,7 @@ export function Calendar({
   };
 
   React.useEffect(() => {
+    // Validation à chaque modification de la sélection
     const newErrors = {
       minDates: selected.length < 10,
       maxDates: selected.length > 20,
@@ -81,6 +82,18 @@ export function Calendar({
     const isValid = Object.values(newErrors).every((error) => !error);
     onValidityChange?.(isValid);
   }, [selected, onValidityChange]);
+
+  React.useEffect(() => {
+    // Validation à chaque modification de la sélection
+    const newErrors = {
+      minDates: selected.length < 10,
+      maxDates: selected.length > 20,
+      consecutive: !isValidSelection(selected),
+    };
+    setErrors(newErrors);
+    const isValid = Object.values(newErrors).every((error) => !error);
+    onValidityChange?.(isValid);
+  }, [selected, onValidityChange]); // Se déclenche à chaque changement dans `selected`
   const renderHeader = () => {
     return (
       <div className="flex justify-between items-center mb-4">
@@ -110,7 +123,7 @@ export function Calendar({
   };
   const renderDays = () => {
     const days = [];
-    let startDate = startOfWeek(currentMonth, { locale: fr });
+    const startDate = startOfWeek(currentMonth, { locale: fr });
     for (let i = 0; i < 7; i++) {
       days.push(
         <div

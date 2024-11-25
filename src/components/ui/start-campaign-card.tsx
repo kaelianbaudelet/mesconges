@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { toast } from "react-hot-toast";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -13,12 +14,19 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { createCampaign } from "@/app/actions/createCampaign";
 
-const StartCampaignCard: React.FC = () => {
+interface StartCampaignCardProps {
+  onCampaignCreated: () => void;
+}
+
+const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
+  onCampaignCreated,
+}) => {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [open, setOpen] = useState<boolean>(false); // Ajout de l'état pour ouvrir/fermer le dialog
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleStartDateChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -30,13 +38,11 @@ const StartCampaignCard: React.FC = () => {
     setEndDate(event.target.value);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    // Reset the error message
     setErrorMessage("");
 
-    // Validate the dates
     if (!startDate || !endDate) {
       setErrorMessage("Les deux dates doivent être remplies.");
     } else if (new Date(startDate) > new Date(endDate)) {
@@ -44,16 +50,30 @@ const StartCampaignCard: React.FC = () => {
         "La date de début ne peut pas être supérieure à la date de fin."
       );
     } else {
-      // Si la validation réussit, fermer le dialog et poursuivre
-      setOpen(false); // Ferme le dialog
-      console.log("Campagne démarrée avec succès");
+      try {
+        await createCampaign(startDate, endDate);
+        console.log("Campagne démarrée avec succès");
+
+        toast.success("Campagne démarrée avec succès");
+
+        setOpen(false);
+
+        // Appelle la fonction de rappel pour notifier la création de la campagne
+        onCampaignCreated();
+      } catch (error) {
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "Erreur lors de la création de la campagne."
+        );
+      }
     }
   };
 
   return (
     <div className="min-h-96 border border-zinc-200 rounded-2xl justify-center items-center flex flex-col p-4">
-      <h1 className="text-xl font-semibold leading-7 mb-4">
-        Il n'y a pas de campagne en cours
+      <h1 className="text-xl font-semibold leading-7 mb-4 text-center">
+        Il n&apos;y a pas de campagne en cours
       </h1>
 
       <AlertDialog open={open} onOpenChange={setOpen}>
@@ -109,13 +129,11 @@ const StartCampaignCard: React.FC = () => {
                 />
               </div>
 
-              {/* Error message */}
               {errorMessage && (
                 <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
               )}
             </AlertDialogHeader>
-            <AlertDialogFooter>
-              {/* Button de soumission personnalisé pour fermer le dialog */}
+            <AlertDialogFooter className="flex flex-col gap-2">
               <Button type="submit">Démarrer la campagne</Button>
               <AlertDialogCancel>Annuler</AlertDialogCancel>
             </AlertDialogFooter>

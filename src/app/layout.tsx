@@ -1,7 +1,8 @@
 import { Lexend } from "./fonts";
-import { SessionProvider } from "next-auth/react";
+
 import type { Metadata } from "next";
 import type { Viewport } from "next";
+import { Toaster } from "react-hot-toast";
 
 import "./globals.css";
 
@@ -101,7 +102,8 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <body className={`${Lexend.variable} antialiased`}>
-        <SessionProvider session={null}>{children}</SessionProvider>
+        {children}
+        <Toaster />
       </body>
     </html>
   );
