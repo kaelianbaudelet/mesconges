@@ -72,7 +72,7 @@ export async function GET(request: Request): Promise<Response> {
     return redirect("/login?error=invalid_claims");
   }
 
-  if (!email.endsWith("@gmail.com")) {
+  if (!email.endsWith("@scapartois.leclerc")) {
     return redirect("/login?error=unauthorized");
   }
 
