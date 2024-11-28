@@ -37,6 +37,6 @@ export async function deleteUsers(userIds: string[]) {
   });
 
   return {
-    message: `${userIds.length} utilisateurs et leurs données associées ont été supprimés.`,
+    success: `${userIds.length} utilisateurs et leurs données associées ont été supprimés.`,
   };
 }

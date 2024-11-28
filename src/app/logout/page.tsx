@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { logout } from "@/app/actions/logout";
 
 const LogoutPage = () => {

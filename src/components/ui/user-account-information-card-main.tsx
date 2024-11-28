@@ -35,17 +35,6 @@ const UserAccountInformationCardMain: React.FC = () => {
     );
   }
 
-  // Préparer les informations utilisateur pour l'affichage
-  const userInfo = [
-    { label: "ID de compte", value: user?.id },
-    {
-      label: "Role",
-      value: user?.role === "admin" ? "Administrateur" : "Utilisateur",
-    },
-    { label: "Nom", value: user?.name },
-    { label: "Email", value: user?.email },
-  ];
-
   return (
     <>
       <div className="px-5 pt-5 pb-0 bg-white rounded-xl border border-zinc-200 border-solid">
