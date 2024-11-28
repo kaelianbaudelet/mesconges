@@ -30,6 +30,8 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
 }) => {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
+  const [startWishSelection, setStartWishSelection] = useState<string>("");
+  const [endWishSelection, setEndWishSelection] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [open, setOpen] = useState<boolean>(false);
 
@@ -43,20 +45,45 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
     setEndDate(event.target.value);
   };
 
+  const handleStartWishSelectionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setStartWishSelection(event.target.value);
+  };
+
+  const handleEndWishSelectionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setEndWishSelection(event.target.value);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     setErrorMessage("");
 
-    if (!startDate || !endDate) {
-      setErrorMessage("Les deux dates doivent être remplies.");
+    if (!startDate || !endDate || !startWishSelection || !endWishSelection) {
+      setErrorMessage("Toutes les dates doivent être remplies.");
     } else if (new Date(startDate) > new Date(endDate)) {
       setErrorMessage(
-        "La date de début ne peut pas être supérieure à la date de fin."
+        "La date de début de campagne ne peut pas être supérieure à la date de fin."
+      );
+    } else if (new Date(startWishSelection) > new Date(endWishSelection)) {
+      setErrorMessage(
+        "La date de début des souhaits ne peut pas être supérieure à la date de fin."
+      );
+    } else if (new Date(endDate) > new Date(startWishSelection)) {
+      setErrorMessage(
+        "La fin de la campagne ne peut pas dépasser le début de la période de souhaits."
       );
     } else {
       try {
-        await createCampaign(startDate, endDate);
+        await createCampaign(
+          startDate,
+          endDate,
+          startWishSelection,
+          endWishSelection
+        );
         console.log("Campagne démarrée avec succès");
 
         toast.success("Campagne démarrée avec succès");
@@ -116,7 +143,7 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
                         type="date"
                         id="startDate"
                         name="startDate"
-                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                        className="mt-1 block w-full rounded-md sm:text-sm"
                         value={startDate}
                         onChange={handleStartDateChange}
                       />
@@ -132,16 +159,11 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
                         type="date"
                         id="endDate"
                         name="endDate"
-                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                        className="mt-1 block w-full rounded-md sm:text-sm"
                         value={endDate}
                         onChange={handleEndDateChange}
                       />
                     </div>
-                    {errorMessage && (
-                      <p className="text-sm text-red-600 mt-2">
-                        {errorMessage}
-                      </p>
-                    )}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
@@ -164,7 +186,9 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
                       <Input
                         type="date"
                         id="startLeaveRequestRange"
-                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                        className="mt-1 block w-full rounded-md sm:text-sm"
+                        value={startWishSelection}
+                        onChange={handleStartWishSelectionChange}
                       />
                     </div>
                     <div>
@@ -177,13 +201,18 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
                       <Input
                         type="date"
                         id="endLeaveRequestRange"
-                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                        className="mt-1 block w-full rounded-md sm:text-sm"
+                        value={endWishSelection}
+                        onChange={handleEndWishSelectionChange}
                       />
                     </div>
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </AlertDialogHeader>
+            {errorMessage && (
+              <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
+            )}
             <AlertDialogFooter className="flex flex-col gap-2">
               <Button type="submit">Démarrer la campagne</Button>
               <AlertDialogCancel>Annuler</AlertDialogCancel>
