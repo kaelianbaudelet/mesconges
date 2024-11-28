@@ -8,65 +8,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@/lib/user";
-import { useRouter } from "next/navigation";
-import { logout } from "@/app/actions/logout";
+import Link from "next/link";
 
 interface UserDropdownProps {
   user: User | null;
 }
-
-const DisconnectDialog = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const router = useRouter();
-
-  return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-      <AlertDialogTrigger
-        className="relative w-full flex cursor-default select-none items-center gap-2 font-semibold hover:text-white hover:bg-destructive rounded-md px-2 py-1.5 text-sm outline-none transition-colors"
-        onClick={() => setIsOpen(true)}
-      >
-        Déconnexion
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            Êtes-vous sûr de vouloir vous déconnecter ?
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            Vous allez être redirigé vers la page de connexion.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsOpen(false)}>
-            Annuler
-          </AlertDialogCancel>
-          <Button
-            variant="destructive"
-            onClick={() => {
-              logout();
-              router.push("/login");
-            }}
-          >
-            Déconnexion
-          </Button>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};
 
 function UserDropdown({ user }: UserDropdownProps) {
   return (
@@ -98,7 +48,12 @@ function UserDropdown({ user }: UserDropdownProps) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <DisconnectDialog />
+            <Link
+              className="bg-red-500 hover:bg-destructive/90 text-white cursor-pointer"
+              href="/logout"
+            >
+              Déconnexion
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

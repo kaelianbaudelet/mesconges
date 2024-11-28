@@ -216,11 +216,11 @@ export const UserListCard: React.FC = () => {
     async (userId: string) => {
       try {
         const result = await deleteUsers([userId]);
-        if (result.success) {
+        if (result.message === "success") {
           toast.success("Utilisateur supprimé avec succès");
           await fetchUsers();
         } else {
-          toast.error(result.error || "Erreur lors de la suppression");
+          toast.error(result.message || "Erreur lors de la suppression");
         }
       } catch {
         toast.error("Erreur lors de la suppression");

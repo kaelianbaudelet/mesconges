@@ -15,5 +15,5 @@ export async function logout() {
   }
   invalidateSession(session.id);
   deleteSessionTokenCookie();
-  return redirect("/login"); // Rediriger après la déconnexion
+  return redirect("/login");
 }

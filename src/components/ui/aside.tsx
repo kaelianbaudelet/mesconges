@@ -9,18 +9,7 @@ import {
   Disconnect,
   Users,
 } from "@/components/ui/icons";
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
-import { logout } from "@/app/actions/logout";
+import Link from "next/link";
 import { fetchUser } from "@/app/actions/fetchUser";
 
 interface AsideProps {
@@ -53,10 +42,10 @@ const Aside: React.FC<AsideProps> = ({
 
   return (
     <div
-      className={`w-max min-w-64 sm:static sm:z-0 flex-col pt-6 sm:pt-0 sm:flex transition-transform duration-300 ${
+      className={`w-max min-w-64 sm:static sm:z-0 flex-col pt-6 sm:pt-0 flex transition-transform duration-300 ${
         isPanelOpen
-          ? "fixed inset-0 bg-white backdrop-blur-sm z-40 -translate-x-full mt-16"
-          : "fixed translate-x-0 bg-white backdrop-blur-sm  h-full sm:border-0 border-r border-zinc-200 z-40"
+          ? "fixed inset-0 bg-white backdrop-blur-sm z-40 sm:translate-x-0 -translate-x-full mt-16 sm:mt-0 sm:w-max w-0"
+          : "fixed bg-white backdrop-blur-sm h-full sm:border-0 border-r border-zinc-200 z-40 "
       }`}
     >
       <div className="sm:px-0 sm:pr-5 px-5">
@@ -130,43 +119,17 @@ const Aside: React.FC<AsideProps> = ({
 
         <div className="my-5 mx-2 h-px bg-zinc-200"></div>
 
-        {/* Déconnexion */}
-        <AlertDialog>
-          <AlertDialogTrigger className="w-full justify-start" asChild>
-            <Button
-              variant="secondary"
-              className="bg-none hover:bg-destructive w-full justify-start hover:text-white group"
-            >
-              <Disconnect
-                color="white"
-                size={20}
-                className="fill-black group-hover:fill-white transition-colors"
-              />
-              Déconnexion
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                Êtes-vous sûr de vouloir vous déconnecter ?
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                Vous allez être redirigé vers la page de connexion.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Annuler</AlertDialogCancel>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  logout();
-                }}
-              >
-                Déconnexion
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        <Link
+          className="bg-none hover:bg-destructive w-full justify-start hover:text-white group flex items-center gap-2.5 p-2.5 rounded-full"
+          href="/login"
+        >
+          <Disconnect
+            color="white"
+            size={20}
+            className="fill-black group-hover:fill-white transition-colors"
+          />
+          Déconnexion
+        </Link>
       </div>
     </div>
   );

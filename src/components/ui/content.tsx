@@ -4,6 +4,7 @@ import * as React from "react";
 import Aside from "@/components/ui/aside";
 import Campaign from "@/components/ui/campaign";
 import UserAccountInformationCard from "@/components/ui/user-account-information-card";
+import UserAccountInformationCardMain from "@/components/ui/user-account-information-card-main";
 import { UserListCard } from "@/components/ui/user-list-card";
 import MyWishes from "./mywishes";
 
@@ -63,7 +64,12 @@ const Content: React.FC = () => {
 
             {activeTab === "utilisateurs" && <UserListCard />}
 
-            {activeTab === "voeux_conges" && <MyWishes />}
+            {activeTab === "voeux_conges" && (
+              <>
+                <UserAccountInformationCardMain />
+                <MyWishes />
+              </>
+            )}
 
             {activeTab === "mon_compte" && <UserAccountInformationCard />}
           </div>
