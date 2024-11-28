@@ -15,6 +15,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createCampaign } from "@/app/actions/createCampaign";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface StartCampaignCardProps {
   onCampaignCreated: () => void;
@@ -88,50 +94,96 @@ const StartCampaignCard: React.FC<StartCampaignCardProps> = ({
               <AlertDialogTitle>
                 Commencer une campagne de voeux de congés
               </AlertDialogTitle>
-              <AlertDialogDescription>
-                Pour démarrer une campagne de voeux de congés, veuillez définir
-                une période de début et de fin. Les utilisateurs pourront
-                soumettre leurs voeux de congés pendant cette période. A la fin
-                de la période, les utilisateurs ne pourront plus soumettre de
-                voeux.
-              </AlertDialogDescription>
-
-              <div>
-                <label
-                  htmlFor="startDate"
-                  className="block text-sm font-medium text-black"
-                >
-                  Date de début
-                </label>
-                <Input
-                  type="date"
-                  id="startDate"
-                  name="startDate"
-                  className="mt-1 block w-full rounded-md border-gray-300 sm:text-sm"
-                  value={startDate}
-                  onChange={handleStartDateChange}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="endDate"
-                  className="block text-sm font-medium text-black"
-                >
-                  Date de fin
-                </label>
-                <Input
-                  type="date"
-                  id="endDate"
-                  name="endDate"
-                  className="mt-1 block w-full rounded-md border-gray-300 sm:text-sm"
-                  value={endDate}
-                  onChange={handleEndDateChange}
-                />
-              </div>
-
-              {errorMessage && (
-                <p className="text-sm text-red-600 mt-2">{errorMessage}</p>
-              )}
+              <Accordion type="single" collapsible>
+                <AccordionItem value="item-1">
+                  <AccordionTrigger className="text-start">
+                    Réglage de la période de campagne
+                  </AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-y-4 text-start">
+                    <p className="text-zinc-500 text-xs font-medium">
+                      Veuillez définir une période de début et de fin pour la
+                      campagne. Les utilisateurs pourront soumettre leurs voeux
+                      de congés pendant cette période. A la fin de la période,
+                      les utilisateurs ne pourront plus soumettre de voeux.
+                    </p>
+                    <div>
+                      <label
+                        htmlFor="startDate"
+                        className="block text-sm font-semibold text-black"
+                      >
+                        Date de début
+                      </label>
+                      <Input
+                        type="date"
+                        id="startDate"
+                        name="startDate"
+                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                        value={startDate}
+                        onChange={handleStartDateChange}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="endDate"
+                        className="block text-sm font-semibold text-black"
+                      >
+                        Date de fin
+                      </label>
+                      <Input
+                        type="date"
+                        id="endDate"
+                        name="endDate"
+                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                        value={endDate}
+                        onChange={handleEndDateChange}
+                      />
+                    </div>
+                    {errorMessage && (
+                      <p className="text-sm text-red-600 mt-2">
+                        {errorMessage}
+                      </p>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="item-2">
+                  <AccordionTrigger className="text-start">
+                    Réglage de la plage de dates pour les demandes de congés
+                  </AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-y-4 text-start">
+                    <p className="text-zinc-500 text-xs font-medium">
+                      Veuillez définir une plage de dates pour la sélection des
+                      demandes de congés. Les utilisateurs devront choisir des
+                      dates comprises dans cette plage.
+                    </p>
+                    <div>
+                      <label
+                        htmlFor="startLeaveRequestRange"
+                        className="block text-sm font-semibold text-black"
+                      >
+                        Date de début
+                      </label>
+                      <Input
+                        type="date"
+                        id="startLeaveRequestRange"
+                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="endLeaveRequestRange"
+                        className="block text-sm font-semibold text-black"
+                      >
+                        Date de fin
+                      </label>
+                      <Input
+                        type="date"
+                        id="endLeaveRequestRange"
+                        className="mt-1 block w-full rounded-md  sm:text-sm"
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </AlertDialogHeader>
             <AlertDialogFooter className="flex flex-col gap-2">
               <Button type="submit">Démarrer la campagne</Button>

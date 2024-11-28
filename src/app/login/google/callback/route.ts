@@ -72,7 +72,9 @@ export async function GET(request: Request): Promise<Response> {
     return redirect("/login?error=invalid_claims");
   }
 
-  if (!email.endsWith("@scapartois.leclerc")) {
+  const emailDomainWhitelist =
+    process.env.EMAIL_DOMAIN_WHITELIST ?? "@scapartois.leclerc";
+  if (!email.endsWith(emailDomainWhitelist)) {
     return redirect("/login?error=unauthorized");
   }
 

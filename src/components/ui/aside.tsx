@@ -55,8 +55,8 @@ const Aside: React.FC<AsideProps> = ({
     <div
       className={`w-max min-w-64 sm:static sm:z-0 flex-col pt-6 sm:pt-0 sm:flex transition-transform duration-300 ${
         isPanelOpen
-          ? "fixed inset-0 bg-white/80 backdrop-blur-sm z-40 -translate-x-full mt-16"
-          : "fixed translate-x-0 bg-white/80 backdrop-blur-sm  h-full sm:border-0 border-r border-zinc-200 z-40"
+          ? "fixed inset-0 bg-white backdrop-blur-sm z-40 -translate-x-full mt-16"
+          : "fixed translate-x-0 bg-white backdrop-blur-sm  h-full sm:border-0 border-r border-zinc-200 z-40"
       }`}
     >
       <div className="sm:px-0 sm:pr-5 px-5">
