@@ -16,8 +16,8 @@ export async function createCampaign(
     data: {
       startDate: new Date(startDate),
       endDate: new Date(endDate),
-      startWishSelection: new Date(startDate), // Add appropriate value
-      endWishSelection: new Date(endDate), // Add appropriate value
+      startWishSelection: new Date(startWishSelection), // Add appropriate value
+      endWishSelection: new Date(endWishSelection), // Add appropriate value
     },
   });
 
