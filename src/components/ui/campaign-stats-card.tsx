@@ -39,7 +39,12 @@ const CampaignStatsCard: React.FC<CampaignStatsCardProps> = ({
     totalUsers: number;
     usersWithWishes: number;
     usersWithoutWishes: number;
-    campaignPeriod: { startDate: string; endDate: string } | null;
+    campaignPeriod: {
+      startDate: string;
+      endDate: string;
+      startWishSelection: string;
+      endWishSelection: string;
+    } | null;
   } | null>(null);
 
   const [isDeleting, setIsDeleting] = useState(false); // Etat pour suivre le statut de la suppression
@@ -59,6 +64,10 @@ const CampaignStatsCard: React.FC<CampaignStatsCardProps> = ({
             ? {
                 startDate: data.campaignPeriod.startDate.toISOString(),
                 endDate: data.campaignPeriod.endDate.toISOString(),
+                startWishSelection:
+                  data.campaignPeriod.startWishSelection.toISOString(),
+                endWishSelection:
+                  data.campaignPeriod.endWishSelection.toISOString(),
               }
             : null,
         });
@@ -209,6 +218,24 @@ const CampaignStatsCard: React.FC<CampaignStatsCardProps> = ({
             <p className="m-0 text-md font-semibold leading-7 text-black">
               {new Date(stats.campaignPeriod.startDate).toLocaleDateString()} au{" "}
               {new Date(stats.campaignPeriod.endDate).toLocaleDateString()}
+            </p>
+          </div>
+        </div>
+      )}
+      {stats.campaignPeriod && (
+        <div className="mt-5 flex flex-col p-4 rounded-xl border border-gray-200 border-solid">
+          <h2 className="m-0 text-sm leading-5 text-zinc-500">
+            Période de sélection des voeux
+          </h2>
+          <div className="flex gap-x-1.5 items-center">
+            <p className="m-0 text-md font-semibold leading-7 text-black">
+              {new Date(
+                stats.campaignPeriod.startWishSelection
+              ).toLocaleDateString()}{" "}
+              au{" "}
+              {new Date(
+                stats.campaignPeriod.endWishSelection
+              ).toLocaleDateString()}
             </p>
           </div>
         </div>

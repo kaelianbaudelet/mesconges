@@ -11,9 +11,16 @@ import { Button } from "./button";
 interface DayPickerProps {
   dates: Date[];
   onDateChange: (dates: Date[], validity: boolean) => void;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
-const DayPicker: React.FC<DayPickerProps> = ({ dates = [], onDateChange }) => {
+const DayPicker: React.FC<DayPickerProps> = ({
+  dates = [],
+  onDateChange,
+  minDate,
+  maxDate,
+}) => {
   const [isValid, setIsValid] = useState(false);
   const [selectedDates, setSelectedDates] = useState<Date[]>(dates);
 
@@ -69,6 +76,8 @@ const DayPicker: React.FC<DayPickerProps> = ({ dates = [], onDateChange }) => {
           selected={selectedDates}
           onSelect={handleDateSelect}
           onValidityChange={handleValidityChange}
+          minDate={minDate}
+          maxDate={maxDate}
         />
       </PopoverContent>
     </Popover>

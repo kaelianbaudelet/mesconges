@@ -216,11 +216,11 @@ export const UserListCard: React.FC = () => {
     async (userId: string) => {
       try {
         const result = await deleteUsers([userId]);
-        if (result.success === "success") {
+        if (result.success) {
           toast.success("Utilisateur supprimé avec succès");
           await fetchUsers();
         } else {
-          toast.error(result.success || "Erreur lors de la suppression");
+          toast.error("Erreur lors de la suppression");
         }
       } catch {
         toast.error("Erreur lors de la suppression");
@@ -376,7 +376,7 @@ export const UserListCard: React.FC = () => {
         setIsDeleteDialogOpen(false);
         setRowSelection({});
       } else {
-        toast.error(result.success || "Erreur lors de la suppression");
+        toast.error("Erreur lors de la suppression");
       }
     } catch {
       toast.error("Erreur lors de la suppression");

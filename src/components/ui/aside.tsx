@@ -120,8 +120,8 @@ const Aside: React.FC<AsideProps> = ({
         <div className="my-5 mx-2 h-px bg-zinc-200"></div>
 
         <Link
-          className="bg-none hover:bg-destructive w-full justify-start hover:text-white group flex items-center gap-2.5 p-2.5 rounded-full"
-          href="/login"
+          className="bg-none hover:bg-red-500 focus:bg-red-500 w-full justify-start hover:text-white group flex items-center gap-2.5 p-2.5 rounded-full transition-colors"
+          href="/logout"
         >
           <Disconnect
             color="white"

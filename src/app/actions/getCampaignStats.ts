@@ -31,6 +31,8 @@ export async function getCampaignStats() {
       ? {
           startDate: activeCampaign.startDate,
           endDate: activeCampaign.endDate,
+          startWishSelection: activeCampaign.startWishSelection,
+          endWishSelection: activeCampaign.endWishSelection,
         }
       : null,
   };

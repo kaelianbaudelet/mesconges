@@ -3,6 +3,7 @@
 "use client";
 import React from "react";
 import {
+  addMonths,
   addDays,
   startOfMonth,
   endOfMonth,
@@ -21,22 +22,43 @@ interface CalendarProps {
   selected: Date[];
   onSelect: (dates: Date[]) => void;
   onValidityChange?: (isValid: boolean) => void;
+  minDate?: Date;
+  maxDate?: Date;
 }
 
 export function Calendar({
   selected,
   onSelect,
   onValidityChange,
+  minDate = new Date(),
+  maxDate = addMonths(new Date(), 6),
 }: CalendarProps) {
-  const [currentMonth, setCurrentMonth] = React.useState(new Date());
+  const [currentMonth, setCurrentMonth] = React.useState(() => {
+    // Initialize to a date within the allowed range
+    return startOfMonth(minDate);
+  });
   const [errors, setErrors] = React.useState({
     minDates: true,
     maxDates: false,
     consecutive: true,
   });
 
+  const nextMonth = () => {
+    const nextMonthStart = addMonths(currentMonth, 1);
+    if (nextMonthStart <= startOfMonth(maxDate)) {
+      setCurrentMonth(nextMonthStart);
+    }
+  };
+
+  const prevMonth = () => {
+    const prevMonthStart = addMonths(currentMonth, -1);
+    if (prevMonthStart >= startOfMonth(minDate)) {
+      setCurrentMonth(prevMonthStart);
+    }
+  };
+
   const onDateClick = (day: Date) => {
-    if (isWeekend(day)) return;
+    if (isWeekend(day) || day < minDate || day > maxDate) return; // Bloque les dates hors plage
     const isSelected = selected.some((date) => isSameDay(date, day));
     if (isSelected) {
       onSelect(selected.filter((date) => !isSameDay(date, day)));
@@ -44,12 +66,7 @@ export function Calendar({
       onSelect([...selected, day].sort((a, b) => a.getTime() - b.getTime()));
     }
   };
-  const nextMonth = () => {
-    setCurrentMonth(addDays(currentMonth, 30));
-  };
-  const prevMonth = () => {
-    setCurrentMonth(addDays(currentMonth, -30));
-  };
+
   const isValidSelection = (dates: Date[]): boolean => {
     let consecutiveWorkdays = 1;
     let maxConsecutiveWorkdays = 1;
@@ -95,11 +112,14 @@ export function Calendar({
     onValidityChange?.(isValid);
   }, [selected, onValidityChange]); // Se déclenche à chaque changement dans `selected`
   const renderHeader = () => {
+    const isPrevDisabled = startOfMonth(currentMonth) <= startOfMonth(minDate);
+    const isNextDisabled = startOfMonth(currentMonth) >= startOfMonth(maxDate);
     return (
       <div className="flex justify-between items-center mb-4">
         <Button
           onClick={prevMonth}
           aria-label="Mois précédent"
+          disabled={isPrevDisabled}
           className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:bg-accent hover:text-accent-foreground h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-50 rounded-full"
         >
           <svg width="24" height="24" viewBox="0 0 24 24">
@@ -112,6 +132,7 @@ export function Calendar({
         <Button
           onClick={nextMonth}
           aria-label="Mois suivant"
+          disabled={isNextDisabled}
           className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-input hover:bg-accent hover:text-accent-foreground h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-50 rounded-full"
         >
           <svg width="24" height="24" viewBox="0 0 24 24">
@@ -148,21 +169,25 @@ export function Calendar({
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
         const isWeekendDay = isWeekend(day);
+        const isDisabled =
+          isWeekendDay || cloneDay < minDate || cloneDay > maxDate;
+
         days.push(
           <button
             key={day.toString()}
             className={`inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-7 w-7 p-0 font-normal rounded-full text-xs  ${
               !isSameMonth(day, monthStart)
-                ? "text-muted-foreground"
-                : isWeekendDay
-                ? "text-muted-foreground"
+                ? "text-zinc-500"
+                : isWeekendDay || isDisabled
+                ? "text-zinc-500"
                 : selected.some((date) => isSameDay(date, cloneDay))
                 ? "bg-primary text-primary-foreground"
                 : "cursor-pointer hover:bg-muted"
             }`}
-            onClick={() => !isWeekendDay && onDateClick(cloneDay)}
+            onClick={() => !isDisabled && onDateClick(cloneDay)}
             role={isWeekendDay ? undefined : "button"}
             aria-pressed={selected.some((date) => isSameDay(date, cloneDay))}
+            disabled={isDisabled}
           >
             {format(day, "d", { locale: fr })}
           </button>

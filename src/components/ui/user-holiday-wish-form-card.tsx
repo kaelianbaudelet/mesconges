@@ -13,8 +13,9 @@ import { Button } from "@/components/ui/button";
 import { saveHolidayWishes } from "@/app/actions/saveHolidayWishes";
 import { fetchCurrentHolidayWishes } from "@/app/actions/fetchCurrentHolidayWishes";
 import { toast } from "react-hot-toast";
-
 import { useCallback } from "react";
+import { getCampaignStats } from "@/app/actions/getCampaignStats";
+
 interface UserHolidayWishFormCardProps {
   defaultDates?: Date[];
 }
@@ -46,6 +47,13 @@ const UserHolidayWishFormCard: React.FC<UserHolidayWishFormCardProps> = () => {
     familyStatus: "",
   });
 
+  const [stats, setStats] = useState<{
+    campaignPeriod: {
+      startWishSelection: Date;
+      endWishSelection: Date;
+    };
+  } | null>(null);
+
   // Fonction pour convertir les dates string en objets Date
   const convertDatesToDateObjects = (dates: string[] | Date[]): Date[] => {
     return dates
@@ -57,6 +65,18 @@ const UserHolidayWishFormCard: React.FC<UserHolidayWishFormCardProps> = () => {
   useEffect(() => {
     const loadExistingWishes = async () => {
       try {
+        const campaignStats = await getCampaignStats();
+        setStats({
+          campaignPeriod: {
+            startWishSelection: new Date(
+              campaignStats?.campaignPeriod?.startWishSelection ?? ""
+            ),
+            endWishSelection: new Date(
+              campaignStats?.campaignPeriod?.endWishSelection ?? ""
+            ),
+          },
+        });
+
         const currentWishes = await fetchCurrentHolidayWishes();
         if (currentWishes) {
           const wish1 = convertDatesToDateObjects(currentWishes.wish1Dates);
@@ -285,7 +305,12 @@ const UserHolidayWishFormCard: React.FC<UserHolidayWishFormCardProps> = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label className="block text-sm font-medium">Premier vœu</label>
-          <DayPicker dates={wish1Dates} onDateChange={handleWish1DateChange} />
+          <DayPicker
+            dates={wish1Dates}
+            onDateChange={handleWish1DateChange}
+            minDate={stats?.campaignPeriod.startWishSelection}
+            maxDate={stats?.campaignPeriod.endWishSelection}
+          />
           {submitted && errors.wish1 && !wish1Valid && (
             <p className="text-sm text-red-500">{errors.wish1}</p>
           )}
@@ -293,7 +318,12 @@ const UserHolidayWishFormCard: React.FC<UserHolidayWishFormCardProps> = () => {
 
         <div className="space-y-2">
           <label className="block text-sm font-medium">Deuxième vœu</label>
-          <DayPicker dates={wish2Dates} onDateChange={handleWish2DateChange} />
+          <DayPicker
+            dates={wish2Dates}
+            onDateChange={handleWish2DateChange}
+            minDate={stats?.campaignPeriod.startWishSelection}
+            maxDate={stats?.campaignPeriod.endWishSelection}
+          />
           {submitted && errors.wish2 && !wish2Valid && (
             <p className="text-sm text-red-500">{errors.wish2}</p>
           )}
@@ -301,7 +331,12 @@ const UserHolidayWishFormCard: React.FC<UserHolidayWishFormCardProps> = () => {
 
         <div className="space-y-2">
           <label className="block text-sm font-medium">Troisième vœu</label>
-          <DayPicker dates={wish3Dates} onDateChange={handleWish3DateChange} />
+          <DayPicker
+            dates={wish3Dates}
+            onDateChange={handleWish3DateChange}
+            minDate={stats?.campaignPeriod.startWishSelection}
+            maxDate={stats?.campaignPeriod.endWishSelection}
+          />
           {submitted && errors.wish3 && !wish3Valid && (
             <p className="text-sm text-red-500">{errors.wish3}</p>
           )}

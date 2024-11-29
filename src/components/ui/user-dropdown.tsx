@@ -49,8 +49,8 @@ function UserDropdown({ user }: UserDropdownProps) {
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
             <Link
-              className="bg-red-500 hover:bg-destructive/90 text-white cursor-pointer"
               href="/logout"
+              className="relative flex cursor-default select-none font-medium items-center gap-2 hover:text-white focus:text-white rounded-md px-2 py-1.5 text-sm outline-none transition-colors hover:bg-red-500 focus:bg-red-500 focus:text-accent-foreground"
             >
               Déconnexion
             </Link>
