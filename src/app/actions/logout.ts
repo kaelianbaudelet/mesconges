@@ -5,7 +5,6 @@ import {
   getCurrentSession,
   invalidateSession,
 } from "@/lib/session";
-import { redirect } from "next/navigation";
 
 export async function logout() {
   const { session } = await getCurrentSession();
@@ -15,5 +14,4 @@ export async function logout() {
   }
   invalidateSession(session.id);
   deleteSessionTokenCookie();
-  return redirect("/login");
 }

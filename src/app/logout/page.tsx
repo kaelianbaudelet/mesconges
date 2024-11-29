@@ -7,7 +7,7 @@ const LogoutPage = () => {
   useEffect(() => {
     logout();
     setTimeout(() => {
-      window.location.href = `https://www.identite.leclerc/login/signout`;
+      window.location.href = `https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=${window.location.origin}`;
       window.close();
     }, 2000);
   }, []);
