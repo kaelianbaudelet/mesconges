@@ -75,6 +75,7 @@ function UserDropdown({ user }: UserDropdownProps) {
                     }
                   } catch (error) {
                     // Ignore les erreurs causées par les restrictions de domaine (CORS)
+                    console.error(error);
                   }
                 }
               }, 1000); // Vérifie toutes les 1 seconde
