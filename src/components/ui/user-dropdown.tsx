@@ -59,8 +59,6 @@ function UserDropdown({ user }: UserDropdownProps) {
               setTimeout(() => {
                 if (popup && !popup.closed) {
                   popup.close();
-                  console.log("Déconnecté avec succès");
-                  // Exemple : rediriger vers la page d'accueil
                   window.location.href = "/";
                 }
               }, 2000);
