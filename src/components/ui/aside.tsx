@@ -119,9 +119,41 @@ const Aside: React.FC<AsideProps> = ({
 
         <div className="my-5 mx-2 h-px bg-zinc-200"></div>
 
-        <Link
+        <Button
           className="bg-none hover:bg-red-500 focus:bg-red-500 w-full justify-start hover:text-white group flex items-center gap-2.5 p-2.5 rounded-full transition-colors"
-          href="/logout"
+          variant="ghost"
+          onClick={() => {
+            // Ouvre une nouvelle pop-up sur l'URL de déconnexion
+            const popup = window.open(
+              "/logout",
+              "_blank",
+              "width=500,height=500"
+            );
+
+            // Vérifie régulièrement l'URL de la pop-up
+            const interval = setInterval(() => {
+              if (!popup || popup.closed) {
+                // Si la pop-up est fermée, arrête l'intervalle
+                clearInterval(interval);
+              } else {
+                try {
+                  // Vérifie si l'URL de la pop-up contient "okta.com"
+                  const currentUrl = popup.location.href;
+                  if (currentUrl.includes("identite.leclerc")) {
+                    popup.close(); // Ferme la pop-up
+                    clearInterval(interval); // Arrête l'intervalle
+
+                    // Action à effectuer après déconnexion
+                    console.log("Déconnecté avec succès");
+                    // Exemple : rediriger vers la page d'accueil
+                    window.location.href = "/";
+                  }
+                } catch (error) {
+                  // Ignore les erreurs causées par les restrictions de domaine (CORS)
+                }
+              }
+            }, 1000); // Vérifie toutes les 1 seconde
+          }}
         >
           <Disconnect
             color="white"
@@ -129,7 +161,7 @@ const Aside: React.FC<AsideProps> = ({
             className="fill-black group-hover:fill-white transition-colors"
           />
           Déconnexion
-        </Link>
+        </Button>
       </div>
     </div>
   );

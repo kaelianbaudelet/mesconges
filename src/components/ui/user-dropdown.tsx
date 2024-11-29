@@ -47,13 +47,41 @@ function UserDropdown({ user }: UserDropdownProps) {
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link
-              href="/logout"
-              className="relative flex cursor-default select-none font-medium items-center gap-2 hover:text-white focus:text-white rounded-md px-2 py-1.5 text-sm outline-none transition-colors hover:bg-red-500 focus:bg-red-500 focus:text-accent-foreground"
-            >
-              Déconnexion
-            </Link>
+          <DropdownMenuItem
+            onClick={() => {
+              // Ouvre une nouvelle pop-up sur l'URL de déconnexion
+              const popup = window.open(
+                "/logout",
+                "_blank",
+                "width=500,height=500"
+              );
+
+              // Vérifie régulièrement l'URL de la pop-up
+              const interval = setInterval(() => {
+                if (!popup || popup.closed) {
+                  // Si la pop-up est fermée, arrête l'intervalle
+                  clearInterval(interval);
+                } else {
+                  try {
+                    // Vérifie si l'URL de la pop-up contient "identite.leclerc"
+                    const currentUrl = popup.location.href;
+                    if (currentUrl.includes("identite.leclerc")) {
+                      popup.close(); // Ferme la pop-up
+                      clearInterval(interval); // Arrête l'intervalle
+
+                      // Action à effectuer après déconnexion
+                      console.log("Déconnecté avec succès");
+                      // Exemple : rediriger vers la page d'accueil
+                      window.location.href = "/";
+                    }
+                  } catch (error) {
+                    // Ignore les erreurs causées par les restrictions de domaine (CORS)
+                  }
+                }
+              }, 1000); // Vérifie toutes les 1 seconde
+            }}
+          >
+            Déconnexion
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
