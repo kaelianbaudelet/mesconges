@@ -6,7 +6,10 @@ import { logout } from "@/app/actions/logout";
 const LogoutPage = () => {
   useEffect(() => {
     logout();
-    window.location.href = `https://www.identite.leclerc/login/signout`;
+    setTimeout(() => {
+      window.location.href = `https://www.identite.leclerc/login/signout`;
+      window.close();
+    }, 2000);
   }, []);
 
   return null;

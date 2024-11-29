@@ -129,30 +129,15 @@ const Aside: React.FC<AsideProps> = ({
               "width=500,height=500"
             );
 
-            // Vérifie régulièrement l'URL de la pop-up
-            const interval = setInterval(() => {
-              if (!popup || popup.closed) {
-                // Si la pop-up est fermée, arrête l'intervalle
-                clearInterval(interval);
-              } else {
-                try {
-                  // Vérifie si l'URL de la pop-up contient "okta.com"
-                  const currentUrl = popup.location.href;
-                  if (currentUrl.includes("identite.leclerc")) {
-                    popup.close(); // Ferme la pop-up
-                    clearInterval(interval); // Arrête l'intervalle
-
-                    // Action à effectuer après déconnexion
-                    console.log("Déconnecté avec succès");
-                    // Exemple : rediriger vers la page d'accueil
-                    window.location.href = "/";
-                  }
-                } catch (error) {
-                  // Ignore les erreurs causées par les restrictions de domaine (CORS)
-                  console.error(error);
-                }
+            // Ferme la pop-up après 2 secondes
+            setTimeout(() => {
+              if (popup && !popup.closed) {
+                popup.close();
+                console.log("Déconnecté avec succès");
+                // Exemple : rediriger vers la page d'accueil
+                window.location.href = "/";
               }
-            }, 1000); // Vérifie toutes les 1 seconde
+            }, 2000);
           }}
         >
           <Disconnect
