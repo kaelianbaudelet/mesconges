@@ -9,7 +9,6 @@ import {
   Disconnect,
   Users,
 } from "@/components/ui/icons";
-import Link from "next/link";
 import { fetchUser } from "@/app/actions/fetchUser";
 
 interface AsideProps {

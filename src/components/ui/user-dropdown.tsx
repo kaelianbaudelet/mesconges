@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import type { User } from "@/lib/user";
-import Link from "next/link";
 
 interface UserDropdownProps {
   user: User | null;
