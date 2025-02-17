@@ -1,5 +1,9 @@
 # MesCongés - Logiciel de récupération des vœux de congés
 
+![Logo 1 (Version Noir)](https://github.com/user-attachments/assets/279bf283-162d-40b2-bd02-22a542e65681)
+
+## Description
+
 **MesCongé** est une application web créer en **[NextJS](https://nextjs.org/)** dédiée à la gestion des vœux de congés. Conçue pour simplifier et optimiser le processus de demande de congés, cette application permet aux collaborateurs de soumettre leurs préférences et vœux de congés directement en ligne, de manière rapide, intuitive et sécurisée.
 
 L'application permet aux salariés de consulter et gérer leurs demandes de congés, tout en offrant aux administrateurs un outil centralisé pour visualiser les vœux de congés. Grâce à son interface simple et ergonomique, MesCongé assure une gestion fluide des demandes de congés, facilitant ainsi la planification des ressources humaines au sein de l'entreprise.
