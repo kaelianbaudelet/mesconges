@@ -1,4 +1,4 @@
-# MesCongés - Logiciel Interne
+# MesCongés - Logiciel de récupération des vœux de congés
 
 **MesCongé** est une application web interne créer en **[NextJS](https://nextjs.org/)** dédiée à la gestion des vœux de congés des employés au sein de l'entreprise. Conçue pour simplifier et optimiser le processus de demande de congés, cette application permet aux collaborateurs de soumettre leurs préférences et vœux de congés directement en ligne, de manière rapide, intuitive et sécurisée.
 
