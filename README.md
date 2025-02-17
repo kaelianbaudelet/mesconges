@@ -21,7 +21,7 @@ Téléchargez le répertoire du dépôt GitHub
 Clonez le dépôt contenant le code de l'application :
 
 ```
-git clone https://github.com/afi-dev/scapartois-mesconges.git
+git clone https://github.com/kaelianbaudelet/mesconges.git
 ```
 
 ### 2. Construire l'image Docker
@@ -92,7 +92,7 @@ docker run -d -p 8080:80 --name mesconge \
 - `GOOGLE_CLIENT_ID`: L'identifiant Client d'application Google Sign-In permet la connexion des utilisateurs a travers le "Connexion avec Google", Pour obtenir une ID client, regarder la section [Obtention d'identifiant d'application OAuth Google SignIn](#google-signin-oauth)
 - `GOOGLE_CLIENT_SECRET`: L'identifiant Secret Client d'application Google Sign-In permet la connexion des utilisateurs a travers le "Connexion avec Google", Pour obtenir une ID client, suivez le guide: https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid?hl=fr
 
-Lors du démarrage du conteneur, **E. Leclerc SCAPARTOIS MesCongé** va automatiquement :
+Lors du démarrage du conteneur, **MesCongé** va automatiquement :
 
 - Installer tous les éléments nécessaires (par exemple, les dépendances de l'application).
 - Créer la base de données si elle n'existe pas.
