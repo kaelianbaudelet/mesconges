@@ -255,7 +255,7 @@ const ExportButton: React.FC<{ data: UserData[] }> = ({ data }) => {
                 exportData(
                   "xlsx",
                   data,
-                  `voeux_utilisateurs_SCAPARTOIS_${formattedDate}.xlsx`
+                  `voeux_utilisateurs_${formattedDate}.xlsx`
                 );
               }}
             >
@@ -312,7 +312,7 @@ const ExportButton: React.FC<{ data: UserData[] }> = ({ data }) => {
                 exportData(
                   "csv",
                   data,
-                  `voeux_utilisateurs_SCAPARTOIS_${formattedDate}.csv`
+                  `voeux_utilisateurs_${formattedDate}.csv`
                 );
               }}
             >
@@ -369,7 +369,7 @@ const ExportButton: React.FC<{ data: UserData[] }> = ({ data }) => {
                 exportData(
                   "wk3",
                   data,
-                  `voeux_utilisateurs_SCAPARTOIS_${formattedDate}.wk3`
+                  `voeux_utilisateurs_${formattedDate}.wk3`
                 );
               }}
             >
@@ -425,7 +425,7 @@ const ExportButton: React.FC<{ data: UserData[] }> = ({ data }) => {
                 exportData(
                   "html",
                   data,
-                  `voeux_utilisateurs_SCAPARTOIS_${formattedDate}.html`
+                  `voeux_utilisateurs_${formattedDate}.html`
                 );
               }}
             >
@@ -474,7 +474,7 @@ const ExportButton: React.FC<{ data: UserData[] }> = ({ data }) => {
                 exportData(
                   "txt",
                   data,
-                  `voeux_utilisateurs_SCAPARTOIS_${formattedDate}.txt`
+                  `voeux_utilisateurs_${formattedDate}.txt`
                 );
               }}
             >

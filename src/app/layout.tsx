@@ -12,16 +12,16 @@ const SITE_URL = String(process.env.NEXT_PUBLIC_SITE_URL);
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Mes congés SCAPARTOIS",
+    default: "Mes congés",
     template: `%s — ${"Mes congés"}`,
   },
   description:
-    "Application intranet dédiée à la gestion des vœux de congés des salariés de Scapartois E.Leclerc.",
-  applicationName: "Mes congés SCAPARTOIS",
+    "Application dédiée à la gestion des vœux de congés.",
+  applicationName: "Mes congés",
   generator: "Next.js",
   referrer: "origin",
-  creator: "SCAPARTOIS E.LECLERC",
-  publisher: "SCAPARTOIS E.LECLERC",
+  creator: "Kaelian BAUDELET",
+  publisher: "Kaelian BAUDELET",
   robots: { index: false, follow: false },
   icons: {
     icon: [
@@ -60,22 +60,22 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: SITE_URL,
-    title: "Mes congés SCAPARTOIS",
+    title: "Mes congés",
     description:
-      "Application intranet dédiée à la gestion des vœux de congés des salariés E.Leclerc SCAPARTOIS.",
-    siteName: "Mes congés SCAPARTOIS",
+      "Application dédiée à la gestion des vœux de congés",
+    siteName: "Mes congés",
     images: [{ url: `${SITE_URL}/social-image.png` }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mes congés SCAPARTOIS",
+    title: "Mes congés",
     description:
-      "Application intranet dédiée à la gestion des vœux de congés des salariés E.Leclerc SCAPARTOIS.",
+      "Application dédiée à la gestion des vœux de congés",
     images: [{ url: `${SITE_URL}/social-image.png` }],
   },
   appleWebApp: {
     capable: true,
-    title: "Mes congés SCAPARTOIS",
+    title: "Mes congés",
     statusBarStyle: "black-translucent",
   },
   formatDetection: {

@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
       <div className="w-full py-6 border-t border-gray-200">
         <div className="flex justify-between items-center gap-2">
           <p className="text-xs text-zinc-500 font-medium">
-            © 2024 E.Leclerc Mes Congés
+            © 2025 Mes congés
           </p>
-          <p className="text-xs text-zinc-500 font-medium">V0.0.1-Ar</p>
+          <p className="text-xs text-zinc-500 font-medium">V1.0.1</p>
         </div>
       </div>
     </footer>

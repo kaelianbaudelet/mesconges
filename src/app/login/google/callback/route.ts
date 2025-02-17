@@ -73,7 +73,7 @@ export async function GET(request: Request): Promise<Response> {
   }
 
   const emailDomainWhitelist =
-    process.env.EMAIL_DOMAIN_WHITELIST ?? "@scapartois.leclerc";
+    process.env.EMAIL_DOMAIN_WHITELIST;
   if (!email.endsWith(emailDomainWhitelist)) {
     return redirect("/login?error=unauthorized");
   }

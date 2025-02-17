@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "MesCongés",
     short_name: "MesCongés",
     description:
-      "Application intranet dédiée à la gestion des vœux de congés des salariés de Scapartois E.Leclerc.",
+      "Application dédiée à la gestion des vœux de congés",
     start_url: "/",
     display: "standalone",
     background_color: "#ffffff",
