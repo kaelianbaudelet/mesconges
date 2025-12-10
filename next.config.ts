@@ -16,7 +16,12 @@ const cspHeader = `
 const nextConfig: NextConfig = {
   output: "standalone",
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
   },
   async headers() {
     return [
